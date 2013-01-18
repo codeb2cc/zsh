@@ -28,10 +28,13 @@ alias mv='mv -i'
 alias du='du -a -h --max-depth=1'
 alias df='df -h'
 alias grep='grep --color'
-alias sudo='sudo -E'
+alias sudo='sudo '
 
 # Path shorcuts
-cdpath=(~ ~/Virtual)
+cdpath=(~)
+
+# Go Lang
+GOROOT=$HOME/Local/lib/go
 
 # User PATH
 PATH=$HOME/Local/bin:$HOME/Local/sbin:$HOME/.local/bin:$HOME/.local/sbin:$GOROOT/bin:$PATH
@@ -53,10 +56,6 @@ bindkey "\e[5D" backward-word
 bindkey "\e\e[C" forward-word
 bindkey "\e\e[D" backward-word
 bindkey "\e[Z" reverse-menu-complete # Shift+Tab
-
-# Gnome Terminal
-bindkey "^[OH" beginning-of-line
-bindkey "^[OF" end-of-line
 
 # Colored man pages
 export LESS='-R'
@@ -85,6 +84,10 @@ function virtual_env_info() {
     env=$(basename $VIRTUAL_ENV 2> /dev/null) || return
     echo "[$env]"
 }
+function ip_info() {
+    ip=$(/sbin/ifconfig eth0 | ack 'inet ([0-9\.]+)' --output="\$1")
+    echo "$ip"
+}
 
 # Prompt configuration
 # {
@@ -95,6 +98,8 @@ function precmd {
     # Truncate the path if it's too long.
     PR_FILLBAR=""
     PR_PWDLEN=""
+
+    PR_IP=$(ip_info)
 
     local promptsize=${#${(%):- %n@%m:%l -}}
     local pwdsize=${#${(%):-%~}}
@@ -147,5 +152,3 @@ setprompt
 WORKON_HOME=~/Virtual
 source /usr/bin/virtualenvwrapper.sh
 
-# Go Lang
-GOROOT=$HOME/Local/lib/go
